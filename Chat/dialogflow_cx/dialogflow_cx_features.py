@@ -1,7 +1,7 @@
-from pydialogflow_fulfillment import DialogflowRequest
-from Chat.servicenow.servicenow_integration import ServiceNowEasyConnect
-from Chat.servicenow.servicenow_model import OpenIncidentEasyConnectModel
-from Chat.models import TbTicketLog, TbSurveyLog, TbErrorLog
+# from pydialogflow_fulfillment import DialogflowRequest
+# from Chat.servicenow.servicenow_integration import ServiceNowEasyConnect
+# from Chat.servicenow.servicenow_model import OpenIncidentEasyConnectModel
+# from Chat.models import TbTicketLog, TbSurveyLog, TbErrorLog
 
 class DialogflowCXFeatures():
     def get_incident(self, request, session_id: str) -> list:
@@ -120,6 +120,6 @@ class DialogflowCXFeatures():
             list: Lista de respostas formatadas.
         """
         if buttons:
-            return [dict(text = dict(text = [message])),dict(payload = dict(buttons = [dict(text = button) for button in buttons]))]
+            return [dict(text = dict(text = [message])),dict(payload = dict(richContent = [[dict(options = [dict(text = button) for button in buttons])]]))]
 
         return [dict(text = dict(text = [message]))]

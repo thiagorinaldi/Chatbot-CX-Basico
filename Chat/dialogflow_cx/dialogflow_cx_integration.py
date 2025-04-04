@@ -43,19 +43,16 @@ class DialogflowCXIntegration:
             # Isso é necessário porque a resposta original é um objeto protobuf
             response = dialogflowcx_v3.DetectIntentResponse.to_dict(response)
 
-            intent_name = response['query_result']['intent']['display_name']
+            page_name = response['query_result']['current_page']['display_name']
+            intent_name = response['query_result']['intent']['display_name'] if response['query_result'].get('intent') else None
             intent_confidence = response['query_result']['intent_detection_confidence']
             fulfillment_messages = response['query_result']['response_messages']
             #fulfillment = ["".join(msg.text.text) for msg in response.query_result.response_messages]
 
-            return dict(code = 200, message = "Detect intent successfully", result = dict(intent_name = intent_name, intent_confidence = intent_confidence, fulfillment_messages = fulfillment_messages))
+            return dict(code = 200, message = "Detect intent successfully", result = dict(page_name = page_name, intent_name = intent_name, intent_confidence = intent_confidence, fulfillment_messages = fulfillment_messages))
 
         except InvalidArgument as e:
-            print(f"Error: {e}")
-
-            return dict(code = 400, message = "Invalid argument", result = None)
+            return dict(code = 400, message = "Invalid argument", result = dict(page_name = None, intent_name = None, intent_confidence = None, fulfillment_messages = ErrorMessages().dialogflow_cx_error()))
 
         except Exception as e:
-            print(f"Unexpected error: {e}")
-
-            return dict(code = 500, message = ErrorMessages().dialogflow_cx_error(), result = None)
+            return dict(code = 500, message = "Error detect intent", result = dict(page_name = None, intent_name = None, intent_confidence = None, fulfillment_messages = ErrorMessages().dialogflow_cx_error()))
